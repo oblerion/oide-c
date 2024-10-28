@@ -1,0 +1,21 @@
+#
+# rgl layout text file (v4.0) - raygui layout file generated using rGuiLayout
+#
+# Number of controls:     10
+#
+# Ref. window:    r <x> <y> <width> <height>
+# Anchor info:    a <id> <name> <posx> <posy> <enabled>
+# Control info:   c <id> <type> <name> <rectangle> <anchor_id> <text>
+#
+r 0 40 -1 -1
+a 001 anchor01 0 0 1
+c 000 0 WindowBox000 0 0 1000 576 1 config
+c 001 22 ColorPicker001 24 72 96 96 1 
+c 002 22 ColorPicker002 168 72 96 96 1 
+c 003 22 ColorPicker003 312 72 96 96 1 
+c 004 4 Label004 24 48 120 24 1 bg color
+c 005 4 Label005 168 48 120 24 1 text color
+c 006 4 Label006 312 48 120 24 1 gui color
+c 007 9 ToggleGroup007 24 224 40 24 1 EN_US;EN_UK;FR_BEL
+c 008 1 GroupBox009 8 40 976 144 1 theme color
+c 009 1 GroupBox010 8 208 976 128 1 keyboard layout
