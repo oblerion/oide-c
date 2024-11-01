@@ -1,7 +1,6 @@
 #pragma once
 #include "raylib.h"
 #include "kbd_layout.h"
-//#include <string>
 #include <string.h>
 #include "dstring.h"
 
@@ -9,11 +8,11 @@
 struct Cmd
 {
     //char scmd[CONSOLE_WIDTH];
-    dstring* scmd;
-    dstring* scmd_tmp;
-    dstring* scom;
-    dstring* svalue;
-    dstring* svalue2;
+    dstring scmd;
+    dstring scmd_tmp;
+    dstring scom;
+    dstring svalue;
+    dstring svalue2;
     int cursor_x;
     int cursor_y;
     KBD_Layout layout_type;
