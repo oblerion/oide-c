@@ -1,4 +1,4 @@
-#include "asset/ftic80.h"
+#include "ftic80.h"
 
 
 #define IF_WIDTH    512

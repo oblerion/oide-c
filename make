@@ -18,7 +18,8 @@ if [ -f "src/main.cpp" ];then
 	CC2=i686-w64-mingw32-g++
 	CFLAGS2="-g -Wall -lm -L${RAYLIBWIN}/lib -lraylib -lopengl32 -lgdi32 -lwinmm -mwindows -static-libgcc -static-libstdc++" 
 fi
-INC2="-I${RAYLIBWIN}/include -I/usr/i696-w64-mingw32/include"
+# -static-libgcc 
+INC2="-I${RAYLIBWIN}/include" # -I/usr/i696-w64-mingw32/include"
 EXEC2="oide.exe"
 DOBJ2="build/win86/"
 
@@ -52,6 +53,14 @@ function comp(){
 		done
 	elif [ -f "src/main.cpp" ];then
 		cd $DSRC
+		for i in *.c ;do
+			out="$TDOBJ${i:0:-2}.o"
+			rm -f $out;
+			echo rm -f $out;
+			command $TCC -c $i $TINC -g -Wall -o ../$out;
+			echo $TCC -c $i $TINC -o ../$out;
+			TLINK="$TLINK $out";
+		done
 		for i in *.cpp ;do
 			out="$TDOBJ${i:0:-4}.o"
 			rm -f $out;

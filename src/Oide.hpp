@@ -2,13 +2,52 @@
 #include "raylib.h"
 #include <cstdio>
 #include <cstdlib>
-#include "Cmd.hpp"
+#include <cstring>
+//#include "Cmd.hpp"
 #include "kbd_layout.h"
-#include "gui_layout_config.h"
+//#include "gui_layout_config.h"
 #include <string>
 #include <vector>
 
 #define OIDE_VERSION "a0.2"
+
+typedef struct {
+    bool WindowBox000Active;
+    Color ColorPicker001Value;
+    Color ColorPicker002Value;
+    Color ColorPicker003Value;
+    int ToggleGroup007Active;
+
+    Rectangle layoutRecs[10];
+
+    // Custom state variables (depend on development software)
+    // NOTE: This variables should be added manually if required
+
+} GuiLayoutConfigState;
+
+class Cmd
+{
+private:
+    std::string scmd;
+    std::string scmd_tmp;
+    std::string scom;
+    std::string svalue;
+    std::string svalue2;
+    int cursor_x;
+    int cursor_y;
+    KBD_Layout layout_type;
+public:
+    Cmd();
+    void Edit(const char* str);
+    void Reset();
+    bool Draw(int size,Font font,Color ctxt,Color ccur);
+    std::string GetCmd();
+    std::string GetCom();
+    std::string GetVal();
+    std::string GetVal2();
+    KBD_Layout GetLayout();
+    void SetLayout(int il);
+};
 
 enum OideScene
 {

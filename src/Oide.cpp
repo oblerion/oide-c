@@ -1,5 +1,205 @@
 #include "Oide.hpp"
-#include "asset/ftic80.h"
+#include "ftic80.h"
+
+// gui
+
+#define RAYGUI_IMPLEMENTATION
+#include "raygui.h"
+
+
+GuiLayoutConfigState InitGuiLayoutConfig(void)
+{
+    GuiLayoutConfigState state = { 0 };
+
+    state.WindowBox000Active = true;
+    state.ColorPicker001Value = (Color){ 0, 0, 0, 0 };
+    state.ColorPicker002Value = (Color){ 0, 0, 0, 0 };
+    state.ColorPicker003Value = (Color){ 0, 0, 0, 0 };
+    state.ToggleGroup007Active = 0;
+
+    state.layoutRecs[0] = (Rectangle){ 0, 0, 1000, 576 };
+    state.layoutRecs[1] = (Rectangle){ 24, 72, 96, 96 };
+    state.layoutRecs[2] = (Rectangle){ 168, 72, 96, 96 };
+    state.layoutRecs[3] = (Rectangle){ 312, 72, 96, 96 };
+    state.layoutRecs[4] = (Rectangle){ 24, 48, 120, 24 };
+    state.layoutRecs[5] = (Rectangle){ 168, 48, 120, 24 };
+    state.layoutRecs[6] = (Rectangle){ 312, 48, 120, 24 };
+    state.layoutRecs[7] = (Rectangle){ 24, 224, 40, 24 };
+    state.layoutRecs[8] = (Rectangle){ 8, 40, 976, 144 };
+    state.layoutRecs[9] = (Rectangle){ 8, 208, 976, 128 };
+
+    // Custom variables initialization
+
+    return state;
+}
+
+void GuiLayoutConfig(GuiLayoutConfigState *state)
+{
+    if (state->WindowBox000Active)
+    {
+        state->WindowBox000Active = !GuiWindowBox(state->layoutRecs[0], "config");
+        GuiColorPicker(state->layoutRecs[1], NULL, &state->ColorPicker001Value);
+        GuiColorPicker(state->layoutRecs[2], NULL, &state->ColorPicker002Value);
+        GuiColorPicker(state->layoutRecs[3], NULL, &state->ColorPicker003Value);
+        GuiLabel(state->layoutRecs[4], "bg color");
+        GuiLabel(state->layoutRecs[5], "text color");
+        GuiLabel(state->layoutRecs[6], "gui color");
+        GuiToggleGroup(state->layoutRecs[7], "EN_US;EN_UK;FR;FR_BEL", &state->ToggleGroup007Active);
+        GuiGroupBox(state->layoutRecs[8], "theme color");
+        GuiGroupBox(state->layoutRecs[9], "keyboard layout");
+    }
+}
+
+// cmd
+
+Cmd::Cmd()
+{
+    layout_type = EN_US;
+    scmd = "";
+    scom = "";
+    svalue = "";
+    svalue2 = "";
+    scmd_tmp = "";
+    cursor_x=0;
+    cursor_y=0;
+}
+void Cmd::Edit(const char* str)
+{
+    const int pos = std::stoi(GetVal());
+    if(pos>0 && scom == "edit")
+    {
+        scmd = GetVal()+" "+str;
+        cursor_x= scmd.length();
+    }
+}
+
+void Cmd::Reset()
+{
+    scmd.clear();
+    cursor_x=0;
+}
+
+
+bool Cmd::Draw(int size,Font font,Color ctxt,Color ccur)
+{
+    bool rb =false;
+    // add letter
+    int k = Kbd_GetKeyPressed(
+        layout_type); //GetKeyPressed();
+    const int length = scmd.length();
+
+    if(IsKeyPressed(KEY_BACKSPACE))
+    {
+        if(cursor_x-1 < length && cursor_x>0)
+        {
+            if(length==1)
+                scmd.clear();
+            else
+            {
+                for(int i=cursor_x-1;i<length;i++)
+                {
+                        scmd[i]=scmd[i+1];
+                }
+            }
+            cursor_x--;
+        }
+    }
+    else if(IsKeyPressed(KEY_RIGHT))
+    {
+        if(cursor_x < 300)
+            cursor_x+=1;
+    }
+    else if(IsKeyPressed(KEY_LEFT))
+    {
+        if(cursor_x > 0)
+        cursor_x-=1;
+    }
+    else if(IsKeyPressed(KEY_ENTER))
+    {
+        const int fpos = scmd.find(" ");
+        scmd_tmp = scmd;
+        if(fpos>-1)
+        {
+            svalue = scmd.substr(fpos+1,scmd.length()-(fpos+1));
+            scom = scmd.substr(0,fpos);
+
+            const int fpos2 = svalue.find(" ");
+            if(fpos2>-1)
+            {
+                const int l = svalue.length();
+                svalue2 = svalue.substr(fpos2+1,l-(fpos2+1));
+                svalue = svalue.substr(0,fpos2);
+            }
+            else
+                svalue2.clear();
+
+            rb=true;
+            Reset();
+
+        }
+        else
+        {
+            svalue.clear();
+            scom = scmd;
+            rb=true;
+            Reset();
+        }
+    }
+    else if(k!=0 &&
+        k != KEY_LEFT_SHIFT &&
+        k != KEY_RIGHT_SHIFT)
+    {
+        scmd.insert(scmd.begin()+cursor_x,1,k);
+        cursor_x++;
+    }
+    Color ccursor1 = ColorAlpha(ccur,0.5f);
+    Color ccursor2 = ColorBrightness(ccur,0.5f);
+    DrawRectangle(1,GetScreenHeight()-size-1,GetRenderWidth()-1,size,ccursor1);
+    DrawRectangleLines(1,GetScreenHeight()-size-1,GetRenderWidth()-1,size,ccursor2);
+    DrawTextEx(font,">>",(Vector2){0,(float)(GetRenderHeight()-size)},size,0,ctxt);
+    DrawTextEx(font,scmd.c_str(),(Vector2){30,(float)(GetRenderHeight()-size)},size,0,ctxt);
+    DrawRectangle(
+        30+(cursor_x*size),
+        (float)(GetRenderHeight()-size)-1,
+        size/2,
+        size,
+        ccur
+    );
+    return rb;
+}
+std::string Cmd::GetCmd()
+{
+    return scmd_tmp;
+}
+std::string Cmd::GetCom()
+{
+    return scom;
+}
+std::string Cmd::GetVal()
+{
+    return svalue;
+}
+std::string Cmd::GetVal2()
+{
+    return svalue2;
+}
+KBD_Layout Cmd::GetLayout()
+{
+    return layout_type;
+}
+void Cmd::SetLayout(int il)
+{
+    switch(il)
+    {
+        case 0: layout_type=EN_US;break;
+        case 1: layout_type=EN_UK;break;
+        case 2: layout_type=FR;break;
+        case 3: layout_type=FR_BEL_VAR;break;
+        default: ;
+    }
+}
+
+// oide
 
 const int Oide::_nbLine()
 {

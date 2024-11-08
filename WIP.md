@@ -13,7 +13,7 @@
 - control offy with mouse weel/arrow
 - console command
 
-- vector<string> -> list dstring
+- c to c++
 - hightlighting
 - offx
 - project path

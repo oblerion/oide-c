@@ -1,0 +1,14 @@
+.kdev4/o.ide.kdev4
+build/linux64/Cmd.o
+build/linux64/dstring.o
+build/linux64/kbd_layout.o
+build/linux64/main.o
+build/linux64/Oide.o
+build/win86/kbd_layout.o
+build/win86/main.o
+build/win86/Oide.o
+oide.exe
+oide_a0.2_win32.zip
+.oide.conf
+ttt
+oide
