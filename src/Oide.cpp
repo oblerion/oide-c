@@ -6,7 +6,6 @@
 #define RAYGUI_IMPLEMENTATION
 #include "raygui.h"
 
-
 GuiLayoutConfigState InitGuiLayoutConfig(void)
 {
     GuiLayoutConfigState state = { 0 };
@@ -63,6 +62,7 @@ Cmd::Cmd()
     cursor_x=0;
     cursor_y=0;
 }
+
 void Cmd::Edit(const char* str)
 {
     const int pos = std::stoi(GetVal());
@@ -78,7 +78,6 @@ void Cmd::Reset()
     scmd.clear();
     cursor_x=0;
 }
-
 
 bool Cmd::Draw(int size,Font font,Color ctxt,Color ccur)
 {
@@ -135,7 +134,6 @@ bool Cmd::Draw(int size,Font font,Color ctxt,Color ccur)
 
             rb=true;
             Reset();
-
         }
         else
         {
@@ -154,10 +152,22 @@ bool Cmd::Draw(int size,Font font,Color ctxt,Color ccur)
     }
     Color ccursor1 = ColorAlpha(ccur,0.5f);
     Color ccursor2 = ColorBrightness(ccur,0.5f);
-    DrawRectangle(1,GetScreenHeight()-size-1,GetRenderWidth()-1,size,ccursor1);
-    DrawRectangleLines(1,GetScreenHeight()-size-1,GetRenderWidth()-1,size,ccursor2);
-    DrawTextEx(font,">>",(Vector2){0,(float)(GetRenderHeight()-size)},size,0,ctxt);
-    DrawTextEx(font,scmd.c_str(),(Vector2){30,(float)(GetRenderHeight()-size)},size,0,ctxt);
+    DrawRectangle(1,
+        GetScreenHeight()-size-1,
+        GetRenderWidth()-1,
+        size,ccursor1);
+    DrawRectangleLines(1,
+        GetScreenHeight()-size-1,
+        GetRenderWidth()-1,
+        size,ccursor2);
+    DrawTextEx(font,
+        ">>",
+        (Vector2){0,(float)(GetRenderHeight()-size)},
+        size,0,ctxt);
+    DrawTextEx(font,
+        scmd.c_str(),
+        (Vector2){30,(float)(GetRenderHeight()-size)},
+        size,0,ctxt);
     DrawRectangle(
         30+(cursor_x*size),
         (float)(GetRenderHeight()-size)-1,
@@ -350,7 +360,6 @@ void Oide::_GUI_Line(Color ctext)
 
         }
     }
-    //Oide_GUI_HightLight(lstr,"int",BLUE);
 }
 
 
@@ -370,8 +379,8 @@ void Oide::_GUI_title()
     {
         DrawTextEx(font,
             vscreen_title[i],
-            (Vector2){100,2+(float)(
-                (i+1)*size)},size,0,config.ctext);
+            (Vector2){100,2+(float)((i+1)*size)},
+            size,0,config.ctext);
     }
 }
 const char* vscreen_help[16] = {
